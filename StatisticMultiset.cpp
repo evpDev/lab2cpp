@@ -4,43 +4,44 @@
 #include <algorithm>
 #include <fstream>
 #include <utility>
-StatisticMultiset::StatisticMultiset() {}
-
-void StatisticMultiset::UpdateFlags() {
+//StatisticMultiset::StatisticMultiset() {}
+template<class T>
+void StatisticMultiset<T>::UpdateFlags() {
     needNewValMax = true;
     needNewValAvg = true;
     needNewValMin = true;
     needNewValCountUnder = true;
     needNewValCountAbove = true;
 };
-
-void StatisticMultiset::AddNum(int num) {
+template<class T>
+void StatisticMultiset<T>::AddNum(T num) {
     if (mySet.empty()) mySet.push_back(num);
     else {
-        std::vector<int>::iterator it;
+        typename std::vector<T>::iterator it;
         for (it = mySet.begin(); *it < num; it++);
         mySet.insert(it, num);
     }
     sumOfNums += num;
     UpdateFlags();
 }
-
-void StatisticMultiset::AddNum(const std::vector<int>& numbers) {
+template<class T>
+void StatisticMultiset<T>::AddNum(const std::vector<T>& numbers) {
     for (int i = 0; i < numbers.size(); i++) sumOfNums += numbers[i];
     mySet.insert(mySet.end(), numbers.begin(), numbers.end());
     std::sort(mySet.begin(), mySet.end());
     UpdateFlags();
 }
 //THere is equal code...
-void StatisticMultiset::AddNum(std::list<int>& numbers) {
-    std::list<int>::iterator it = numbers.begin();
+template<class T>
+void StatisticMultiset<T>::AddNum(std::list<T>& numbers) {
+    typename std::list<T>::iterator it = numbers.begin();
     for (; it != numbers.end(); it++) sumOfNums += *it;
     mySet.insert(mySet.end(), numbers.begin(), numbers.end());
     std::sort(mySet.begin(), mySet.end());
     UpdateFlags();
 }
-
-void StatisticMultiset::AddNumsFromFile(const char* filename) {
+template<class T>
+void StatisticMultiset<T>::AddNumsFromFile(const char* filename) {
     std::ifstream fin(filename);
     int num;
     if (fin.is_open()) while (fin >> num) AddNum(num);
@@ -48,35 +49,39 @@ void StatisticMultiset::AddNumsFromFile(const char* filename) {
     fin.close();
     UpdateFlags();
 }
-
-void StatisticMultiset::AddNums(const StatisticMultiset& statSetObj) {
+template<class T>
+void StatisticMultiset<T>::AddNums(const StatisticMultiset& statSetObj) {
     AddNum(statSetObj.mySet);
     UpdateFlags();
 }
 
- // Maximum number.
-int StatisticMultiset::GetMax() const {
+// Maximum number.
+template<class T>
+T StatisticMultiset<T>::GetMax() const {
     if (needNewValMax) {
         valMax = mySet[mySet.size()-1];
         needNewValMax = false;
     } return valMax;
 }
- // Minimal number.
-int StatisticMultiset::GetMin() const {
+// Minimal number.
+template<class T>
+T StatisticMultiset<T>::GetMin() const {
     if (needNewValMin) {
         valMin = mySet[0];
         needNewValMin = false;
     } return valMin;
 }
- // Average number from amount of numbers.
-float StatisticMultiset::GetAvg() const {
+// Average number from amount of numbers.
+template<class T>
+float StatisticMultiset<T>::GetAvg() const {
     if (needNewValAvg) {
         valAvg = sumOfNums/mySet.size();
         needNewValAvg = false;
     } return valAvg;
 }
- // Amount of number which less than threshold.
-int StatisticMultiset::GetCountUnder(float threshold) const {
+// Amount of number which less than threshold.
+template<class T>
+int StatisticMultiset<T>::GetCountUnder(float threshold) const {
     if (needNewValCountUnder) {
         int i;
         for (i = 0; mySet[i] < threshold; i++);
@@ -84,8 +89,9 @@ int StatisticMultiset::GetCountUnder(float threshold) const {
     } return valCountUnder.second;
     //return i;
 }
- // Amount of number which more than threshold.
-int StatisticMultiset::GetCountAbove(float threshold) const {
+// Amount of number which more than threshold.
+template<class T>
+int StatisticMultiset<T>::GetCountAbove(float threshold) const {
     if (needNewValCountAbove) {
         int i;
         for (i = 0; mySet[i] <= threshold; i++);
@@ -94,7 +100,8 @@ int StatisticMultiset::GetCountAbove(float threshold) const {
     //return mySet.size() - i;
 }
 //it shows all numbers
-void StatisticMultiset::ShowNums() {
+template<class T>
+void StatisticMultiset<T>::ShowNums() {
     int i;
     for (i = 0; i < mySet.size()-1; i++) std::cout << mySet[i] << ", ";
     std::cout << mySet[i] << std::endl;

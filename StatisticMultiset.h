@@ -4,23 +4,24 @@
 #include <vector>
 #include <list>
 #include <map>
+template<class T>
 class StatisticMultiset {
-    std::vector<int> mySet;
+    std::vector<T> mySet;
     float sumOfNums = 0;
     mutable bool needNewValMax, needNewValAvg, needNewValMin, needNewValCountUnder, needNewValCountAbove;
     mutable int valMax, valMin;
     mutable float valAvg;
-    mutable std::pair<float, int> valCountUnder, valCountAbove;
+    mutable std::pair<float, T> valCountUnder, valCountAbove;
     void UpdateFlags();
 public:
-    StatisticMultiset();
-    void AddNum(int num);
-    void AddNum(const std::vector<int>& numbers);
-    void AddNum(std::list<int>& numbers);
+    //StatisticMultiset();
+    void AddNum(T num);
+    void AddNum(const std::vector<T>& numbers);
+    void AddNum(std::list<T>& numbers);
     void AddNumsFromFile(const char* filename);
     void AddNums(const StatisticMultiset& statSetObj);
-    int GetMax() const;
-    int GetMin() const;
+    T GetMax() const;
+    T GetMin() const;
     float GetAvg() const;
     int GetCountUnder(float threshold) const;
     int GetCountAbove(float threshold) const;
